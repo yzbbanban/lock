@@ -9,7 +9,7 @@ import com.yzb.lock.vo.req.TerminalRegisterMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MsgDecoder {
+public class   MsgDecoder {
 
 	private static final Logger log = LoggerFactory.getLogger(MsgDecoder.class);
 

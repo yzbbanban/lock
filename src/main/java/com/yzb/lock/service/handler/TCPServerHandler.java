@@ -18,6 +18,8 @@ import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -61,7 +63,9 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
      */
     private void processPackageData(PackageData packageData) {
         final PackageData.MsgHeader header = packageData.getMsgHeader();
-
+        logger.info(">>>>>[终端header],phone={},flowid={}"+header);
+        logger.info(">>>>>[终端package],BodyBytes={}"+ Arrays.toString(packageData.getMsgBodyBytes()));
+        logger.info(">>>>>[终端package],CheckSum={}"+packageData.getCheckSum());
         logger.info(">>>>>[终端header],phone={},flowid={}", header.getTerminalPhone(), header.getMsgId());
         // 1. 终端心跳-消息体为空 ==> 平台通用应答
         if (TPMSConsts.msg_id_terminal_heart_beat == header.getMsgId()) {
