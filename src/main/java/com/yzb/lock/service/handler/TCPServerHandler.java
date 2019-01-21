@@ -37,6 +37,7 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws InterruptedException { // (2)
         try {
+            logger.info("msg:{}", msg);
             ByteBuf buf = (ByteBuf) msg;
             if (buf.readableBytes() <= 0) {
                 // ReferenceCountUtil.safeRelease(msg);
@@ -45,7 +46,9 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
 
             byte[] bs = new byte[buf.readableBytes()];
             buf.readBytes(bs);
+            logger.info("toHexString: {}", MsgDecoder.toHexString1(bs));
 
+            logger.info("byte: {}", Arrays.toString(bs));
             // 字节数据转换为针对于808消息结构的实体类
             PackageData pkg = this.decoder.bytes2PackageData(bs);
             // 引用channel,以便回送数据给硬件
@@ -56,6 +59,7 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
         }
     }
 
+
     /**
      * 处理业务逻辑
      *
@@ -63,9 +67,9 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
      */
     private void processPackageData(PackageData packageData) {
         final PackageData.MsgHeader header = packageData.getMsgHeader();
-        logger.info(">>>>>[终端header],phone={},flowid={}"+header);
-        logger.info(">>>>>[终端package],BodyBytes={}"+ Arrays.toString(packageData.getMsgBodyBytes()));
-        logger.info(">>>>>[终端package],CheckSum={}"+packageData.getCheckSum());
+        logger.info(">>>>>[终端header],phone={},flowid={}", header);
+        logger.info(">>>>>[终端package],BodyBytes={}", Arrays.toString(packageData.getMsgBodyBytes()));
+        logger.info(">>>>>[终端package],CheckSum={}", packageData.getCheckSum());
         logger.info(">>>>>[终端header],phone={},flowid={}", header.getTerminalPhone(), header.getMsgId());
         // 1. 终端心跳-消息体为空 ==> 平台通用应答
         if (TPMSConsts.msg_id_terminal_heart_beat == header.getMsgId()) {
@@ -134,8 +138,18 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
         }
         // 其他情况
         else {
-            logger.error(">>>>>>[未知消息类型],phone={},msgId={},package={}", header.getTerminalPhone(), header.getMsgId(),
-                    packageData);
+//            logger.error(">>>>>>[未知消息类型],phone={},msgId={},package={}", header.getTerminalPhone(), header.getMsgId(),
+//                    packageData);
+            logger.info(">>>>>else[终端鉴权],phone={},flowid={}", header.getTerminalPhone(), header.getFlowId());
+            try {
+                TerminalAuthenticationMsg authenticationMsg = new TerminalAuthenticationMsg(packageData);
+                this.msgProcessService.processAuthMsg(authenticationMsg);
+                logger.info("<<<<<else[终端鉴权],phone={},flowid={}", header.getTerminalPhone(), header.getFlowId());
+            } catch (Exception e) {
+                logger.error("<<<<<else[终端鉴权]处理错误,phone={},flowid={},err={}", header.getTerminalPhone(), header.getFlowId(),
+                        e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
