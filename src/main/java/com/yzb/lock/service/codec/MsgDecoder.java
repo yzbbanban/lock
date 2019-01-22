@@ -71,11 +71,16 @@ public class MsgDecoder {
 
     }
 
+    /**
+     * 7e 0100 003e 686123525013 0039 0001000237303935360000000000000000000000000000000000000000383638363836313233353235303133eb88e6003659010289860404191890095939237e
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
         String by = "7e0100003e68612352501300390001000237303935360000000000000000000000000000000000000000383638363836313233353235303133eb88e6003659010289860404191890095939237e";
         System.out.println(by);
-        byte[] data = new byte[]{126, 1, 0, 0, 62, 104, 97, 35, 82, 80, 19, 0, 37, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 56, 54, 56, 54, 49, 50, 51, 53, 50, 53, 48, 49, 51, -21, -120, -26, 0, 54, 89, 1, 2, -119, -122, 4, 4, 25, 24, -112, 9, 89, 57, 63, 126};
+        byte[] data = new byte[]{126, 1, 0, 0, 62, 104, 97, 35, 82, 80, 19, 0, 57, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 56, 54, 56, 54, 49, 50, 51, 53, 50, 53, 48, 49, 51, -21, -120, -26, 0, 54, 89, 1, 2, -119, -122, 4, 4, 25, 24, -112, 9, 89, 57, 35, 126};
         System.out.println(toHexString1(data));
         byte[] tmp = new byte[2];
         System.arraycopy(data, 1, tmp, 0, 2);
@@ -128,19 +133,19 @@ public class MsgDecoder {
     private PackageData.MsgHeader parseMsgHeaderFromBytes(byte[] data) {
         PackageData.MsgHeader msgHeader = new PackageData.MsgHeader();
 
-        // 1. 消息ID word(16)
+        // 1. 消息ID word(16) √
         byte[] tmp = new byte[2];
         System.arraycopy(data, 1, tmp, 0, 2);
         msgHeader.setMsgId(this.bitOperator.twoBytesToInteger(tmp));
 //		msgHeader.setMsgId(this.parseIntFromBytes(data, 1, 2));
 
-        // 2. 消息体属性 word(16)=================>
+        // 2. 消息体属性 word(16)==> √
         System.arraycopy(data, 3, tmp, 0, 2);
         int msgBodyProps = this.bitOperator.twoBytesToInteger(tmp);
 //		int msgBodyProps = this.parseIntFromBytes(data, 3, 2);
-
-
         msgHeader.setMsgBodyPropsField(msgBodyProps);
+
+
         // [ 0-9 ] 0000,0011,1111,1111(3FF)(消息体长度)
         msgHeader.setMsgBodyLength(msgBodyProps & 0x3ff);
         // [10-12] 0001,1100,0000,0000(1C00)(加密类型)
@@ -151,16 +156,17 @@ public class MsgDecoder {
         msgHeader.setReservedBit(((msgBodyProps & 0xc000) >> 14) + "");
         // 消息体属性 word(16)<=================
 
-        // 3. 终端手机号 bcd[6]
+        // 3. 终端手机号 bcd[6] √
         tmp = new byte[6];
 //        System.arraycopy(data, 4, tmp, 0, 6);
         System.arraycopy(data, 5, tmp, 0, 6);
         msgHeader.setTerminalPhone(this.bcd8421Operater.bcd2String(tmp));
 //		msgHeader.setTerminalPhone(this.parseBcdStringFromBytes(data, 4, 6));
 
-        // 4. 消息流水号 word(16) 按发送顺序从 0 开始循环累加
+        // 4. 消息流水号 word(16) 按发送顺序从 0 开始循环累加 √
         tmp = new byte[2];
-        System.arraycopy(data, 10, tmp, 0, 2);
+        System.arraycopy(data, 11, tmp, 0, 2);
+        System.out.println(toHexString1(tmp));
         msgHeader.setFlowId(this.bitOperator.twoBytesToInteger(tmp));
 //		msgHeader.setFlowId(this.parseIntFromBytes(data, 10, 2));
 
