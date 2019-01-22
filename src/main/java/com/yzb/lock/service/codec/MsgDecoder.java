@@ -79,7 +79,7 @@ public class MsgDecoder {
     public static void main(String[] args) {
 
         String by = "7e0100003e68612352501300390001000237303935360000000000000000000000000000000000000000383638363836313233353235303133eb88e6003659010289860404191890095939237e";
-        System.out.println(by);
+        System.out.println((by.length() - 6) / 2);
         byte[] data = new byte[]{126, 1, 0, 0, 62, 104, 97, 35, 82, 80, 19, 0, 57, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 56, 54, 56, 54, 49, 50, 51, 53, 50, 53, 48, 49, 51, -21, -120, -26, 0, 54, 89, 1, 2, -119, -122, 4, 4, 25, 24, -112, 9, 89, 57, 35, 126};
         System.out.println(toHexString1(data));
         byte[] tmp = new byte[2];
@@ -99,6 +99,8 @@ public class MsgDecoder {
         MsgDecoder msgDecoder = new MsgDecoder();
         PackageData.MsgHeader saa = msgDecoder.parseMsgHeaderFromBytes(data);
         System.out.println(saa);
+
+        TerminalRegisterMsg msg = msgDecoder.toTerminalRegisterMsg(msgDecoder.bytes2PackageData(data));
     }
 
     /**
@@ -147,9 +149,9 @@ public class MsgDecoder {
 
 
         // [ 0-9 ] 0000,0011,1111,1111(3FF)(消息体长度)
-        msgHeader.setMsgBodyLength(msgBodyProps & 0x3ff);
+        msgHeader.setMsgBodyLength(msgBodyProps & 0x1ff);
         // [10-12] 0001,1100,0000,0000(1C00)(加密类型)
-        msgHeader.setEncryptionType((msgBodyProps & 0x1c00) >> 10);
+        msgHeader.setEncryptionType((msgBodyProps & 0xe00) >> 10);
         // [ 13_ ] 0010,0000,0000,0000(2000)(是否有子包)
         msgHeader.setHasSubPackage(((msgBodyProps & 0x2000) >> 13) == 1);
         // [14-15] 1100,0000,0000,0000(C000)(保留位)
@@ -171,21 +173,20 @@ public class MsgDecoder {
 //		msgHeader.setFlowId(this.parseIntFromBytes(data, 10, 2));
 
         // 5. 消息包封装项
-        // 有子包信息
         if (msgHeader.isHasSubPackage()) {
             // 消息包封装项字段
             msgHeader.setPackageInfoField(this.parseIntFromBytes(data, 12, 4));
             // byte[0-1] 消息包总数(word(16))
-            tmp = new byte[2];
-            System.arraycopy(data, 12, tmp, 0, 2);
-            msgHeader.setTotalSubPackage(this.bitOperator.twoBytesToInteger(tmp));
-//			msgHeader.setTotalSubPackage(this.parseIntFromBytes(data, 12, 2));
+            // tmp = new byte[2];
+            // System.arraycopy(data, 12, tmp, 0, 2);
+            // msgHeader.setTotalSubPackage(this.bitOperator.twoBytesToInteger(tmp));
+            msgHeader.setTotalSubPackage(this.parseIntFromBytes(data, 12, 2));
 
             // byte[2-3] 包序号(word(16)) 从 1 开始
-            tmp = new byte[2];
-            System.arraycopy(data, 14, tmp, 0, 2);
-            msgHeader.setSubPackageSeq(this.bitOperator.twoBytesToInteger(tmp));
-//			msgHeader.setSubPackageSeq(this.parseIntFromBytes(data, 12, 2));
+            // tmp = new byte[2];
+            // System.arraycopy(data, 14, tmp, 0, 2);
+            // msgHeader.setSubPackageSeq(this.bitOperator.twoBytesToInteger(tmp));
+            msgHeader.setSubPackageSeq(this.parseIntFromBytes(data, 12, 2));
         }
         return msgHeader;
     }
@@ -275,7 +276,7 @@ public class MsgDecoder {
         body.setLicensePlateColor(this.parseIntFromBytes(data, 37, 10));
 
         // 7. byte[47-x] OTG ID
-        body.setLicensePlate(this.parseStringFromBytes(data, 47, data.length - 25));
+        body.setLicensePlate(this.parseStringFromBytes(data, 47, 12));
 
         ret.setTerminalRegInfo(body);
         return ret;
