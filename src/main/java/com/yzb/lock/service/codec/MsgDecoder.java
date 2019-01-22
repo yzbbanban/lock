@@ -56,9 +56,8 @@ public class MsgDecoder {
         return ret;
     }
 
-    public static void main1(String[] args) {
-
-        String by="7e0102000c68612352501300013638363132333532353031333d7e";
+    public static void main2(String[] args) {
+        String by = "7e0100003e68612352501300340001000237303935360000000000000000000000000000000000000000383638363836313233353235303133eb88e60036590102898604041918900959392e7e";
         BitOperator bitOperator = new BitOperator();
         byte[] data = new byte[]{126, 1, 0, 0, 62, 104, 97, 35, 82, 80, 19, 0, 9, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 56, 54, 56, 54, 49, 50, 51, 53, 50, 53, 48, 49, 51, -21, -120, -26, 0, 54, 89, 1, 2, -119, -122, 4, 4, 25, 24, -112, 9, 89, 57, 19, 126};
         byte[] tmp = new byte[2];
@@ -66,11 +65,35 @@ public class MsgDecoder {
         System.out.println(toHexString1(tmp));
     }
 
-    public static void main(String[] args) {
-
-        String by="7e 0102 000c 686123525013 0001 363836313233353235303133 3d7e";
+    public static void main1(String[] args) {
+        String by = "7e 0102 000c 686123525013 0001 363836313233353235303133 3d7e";
         System.out.println(by.length());
 
+    }
+
+    public static void main(String[] args) {
+
+        String by = "7e0100003e68612352501300390001000237303935360000000000000000000000000000000000000000383638363836313233353235303133eb88e6003659010289860404191890095939237e";
+        System.out.println(by);
+        byte[] data = new byte[]{126, 1, 0, 0, 62, 104, 97, 35, 82, 80, 19, 0, 37, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 56, 54, 56, 54, 49, 50, 51, 53, 50, 53, 48, 49, 51, -21, -120, -26, 0, 54, 89, 1, 2, -119, -122, 4, 4, 25, 24, -112, 9, 89, 57, 63, 126};
+        System.out.println(toHexString1(data));
+        byte[] tmp = new byte[2];
+        System.arraycopy(data, 1, tmp, 0, 2);
+        System.out.println(toHexString1(tmp));
+        String res = toHexString1(tmp);
+        int s1 = 0x0100;
+        System.out.println(s1);
+        BitOperator bitOperator = new BitOperator();
+        int p = bitOperator.twoBytesToInteger(tmp);
+        System.out.println(p);
+        int s = Integer.parseInt(res, 16);
+        System.out.println("---> " + s);
+        boolean ss = TPMSConsts.msg_id_terminal_register == p;
+        System.out.println("---->" + ss);
+
+        MsgDecoder msgDecoder = new MsgDecoder();
+        PackageData.MsgHeader saa = msgDecoder.parseMsgHeaderFromBytes(data);
+        System.out.println(saa);
     }
 
     /**
@@ -107,14 +130,16 @@ public class MsgDecoder {
 
         // 1. 消息ID word(16)
         byte[] tmp = new byte[2];
-        System.arraycopy(data, 0, tmp, 0, 2);
+        System.arraycopy(data, 1, tmp, 0, 2);
         msgHeader.setMsgId(this.bitOperator.twoBytesToInteger(tmp));
-//		msgHeader.setMsgId(this.parseIntFromBytes(data, 0, 2));
+//		msgHeader.setMsgId(this.parseIntFromBytes(data, 1, 2));
 
         // 2. 消息体属性 word(16)=================>
-        System.arraycopy(data, 2, tmp, 0, 2);
+        System.arraycopy(data, 3, tmp, 0, 2);
         int msgBodyProps = this.bitOperator.twoBytesToInteger(tmp);
-//		int msgBodyProps = this.parseIntFromBytes(data, 2, 2);
+//		int msgBodyProps = this.parseIntFromBytes(data, 3, 2);
+
+
         msgHeader.setMsgBodyPropsField(msgBodyProps);
         // [ 0-9 ] 0000,0011,1111,1111(3FF)(消息体长度)
         msgHeader.setMsgBodyLength(msgBodyProps & 0x3ff);
