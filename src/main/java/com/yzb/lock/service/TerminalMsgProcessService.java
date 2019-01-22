@@ -25,7 +25,7 @@ public class TerminalMsgProcessService extends BaseMsgProcessService {
     }
 
     public void processRegisterMsg(TerminalRegisterMsg msg) throws Exception {
-        log.debug("processRegisterMsg终端注册:{}", JSON.toJSONString(msg, true));
+        log.info("processRegisterMsg终端注册:{}", JSON.toJSONString(msg, true));
 
         final String sessionId = Session.buildId(msg.getChannel());
         Session session = sessionManager.findBySessionId(sessionId);

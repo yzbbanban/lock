@@ -33,11 +33,11 @@ public class MsgDecoder {
         PackageData.MsgHeader msgHeader = this.parseMsgHeaderFromBytes(data);
         ret.setMsgHeader(msgHeader);
 
-        int msgBodyByteStartIndex = 12;
+        int msgBodyByteStartIndex = 13;
         // 2. 消息体
         // 有子包信息,消息体起始字节后移四个字节:消息包总数(word(16))+包序号(word(16))
         if (msgHeader.isHasSubPackage()) {
-            msgBodyByteStartIndex = 16;
+            msgBodyByteStartIndex = 17;
         }
 
         byte[] tmp = new byte[msgHeader.getMsgBodyLength()];
@@ -76,11 +76,12 @@ public class MsgDecoder {
      *
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main3(String[] args) {
 
         String by = "7e0100003e68612352501300390001000237303935360000000000000000000000000000000000000000383638363836313233353235303133eb88e6003659010289860404191890095939237e";
         System.out.println((by.length() - 6) / 2);
-        byte[] data = new byte[]{126, 1, 0, 0, 62, 104, 97, 35, 82, 80, 19, 0, 57, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 56, 54, 56, 54, 49, 50, 51, 53, 50, 53, 48, 49, 51, -21, -120, -26, 0, 54, 89, 1, 2, -119, -122, 4, 4, 25, 24, -112, 9, 89, 57, 35, 126};
+//        byte[] data = new byte[]{126, 1, 0, 0, 62, 104, 97, 35, 82, 80, 19, 0, 57, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 56, 54, 56, 54, 49, 50, 51, 53, 50, 53, 48, 49, 51, -21, -120, -26, 0, 54, 89, 1, 2, -119, -122, 4, 4, 25, 24, -112, 9, 89, 57, 35, 126};
+        byte[] data = new byte[]{126, 1, 0, 0, 62, 104, 97, 35, 82, 80, 19, 0, 39, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 56, 54, 56, 54, 49, 50, 51, 53, 50, 53, 48, 49, 51, -21, -120, -26, 0, 54, 89, 1, 2, -119, -122, 4, 4, 25, 24, -112, 9, 89, 57, 61, 126};
         System.out.println(toHexString1(data));
         byte[] tmp = new byte[2];
         System.arraycopy(data, 1, tmp, 0, 2);
@@ -99,8 +100,15 @@ public class MsgDecoder {
         MsgDecoder msgDecoder = new MsgDecoder();
         PackageData.MsgHeader saa = msgDecoder.parseMsgHeaderFromBytes(data);
         System.out.println(saa);
+        PackageData pp = msgDecoder.bytes2PackageData(data);
+        System.out.println(toHexString1(pp.getMsgBodyBytes()));
+        TerminalRegisterMsg msg = msgDecoder.toTerminalRegisterMsg(pp);
+    }
 
-        TerminalRegisterMsg msg = msgDecoder.toTerminalRegisterMsg(msgDecoder.bytes2PackageData(data));
+    public static void main(String[] args) {
+        byte[] data = new byte[]{0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 56, 54, 56, 54, 49, 50, 51, 53, 50, 53, 48, 49, 51, -21, -120, -26, 0, 54, 89, 1, 2, -119, -122, 4, 4, 25, 24, -112, 9, 89, 57};
+        System.out.println(toHexString1(data));
+
     }
 
     /**
@@ -150,6 +158,8 @@ public class MsgDecoder {
 
         // [ 0-9 ] 0000,0011,1111,1111(3FF)(消息体长度)
         msgHeader.setMsgBodyLength(msgBodyProps & 0x1ff);
+        System.out.println("------> 0x1ff  " + (msgBodyProps & 0x1ff));
+
         // [10-12] 0001,1100,0000,0000(1C00)(加密类型)
         msgHeader.setEncryptionType((msgBodyProps & 0xe00) >> 10);
         // [ 13_ ] 0010,0000,0000,0000(2000)(是否有子包)

@@ -29,8 +29,8 @@ public class MsgEncoder {
 		if (respMsgBody.getReplyCode() == TerminalRegisterMsgRespBody.success) {
 			msgBody = this.bitOperator.concatAll(Arrays.asList(//
 					bitOperator.integerTo2Bytes(respMsgBody.getReplyFlowId()), // 流水号(2)
-					new byte[] { respMsgBody.getReplyCode() }, // 结果
-					respMsgBody.getReplyToken().getBytes(TPMSConsts.string_charset)// 鉴权码(STRING)
+					new byte[] { respMsgBody.getReplyCode() }// 结果
+//					respMsgBody.getReplyToken().getBytes(TPMSConsts.string_charset)// 鉴权码(STRING)
 			));
 		} else {
 			msgBody = this.bitOperator.concatAll(Arrays.asList(//
