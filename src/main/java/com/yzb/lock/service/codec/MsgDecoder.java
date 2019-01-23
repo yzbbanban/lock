@@ -45,10 +45,11 @@ public class MsgDecoder {
         ret.setMsgBodyBytes(tmp);
 
         // 3. 去掉分隔符之后，最后一位就是校验码
-        // int checkSumInPkg =
-        // this.bitOperator.oneByteToInteger(data[data.length - 1]);
-        int checkSumInPkg = data[data.length - 1];
-        int calculatedCheckSum = this.bitOperator.getCheckSum4JT808(data, 0, data.length - 1);
+        int checkSumInPkg = this.bitOperator.oneByteToInteger(data[data.length - 2]);
+//        int checkSumInPkg = data[data.length - 2];
+        int calculatedCheckSum = this.bitOperator.getCheckSum4JT808(data, 0, data.length - 2);
+        System.out.println("checkSumInPkg: " + checkSumInPkg);
+        System.out.println("calculatedCheckSum: " + calculatedCheckSum);
         ret.setCheckSum(checkSumInPkg);
         if (checkSumInPkg != calculatedCheckSum) {
             log.warn("检验码不一致,msgid:{},pkg:{},calculated:{}", msgHeader.getMsgId(), checkSumInPkg, calculatedCheckSum);
@@ -76,15 +77,20 @@ public class MsgDecoder {
      *
      * @param args
      */
-    public static void main4(String[] args) {
+    public static void main(String[] args) {
 
         String by = "7e0100003e68612352501300390001000237303935360000000000000000000000000000000000000000383638363836313233353235303133eb88e6003659010289860404191890095939237e";
         System.out.println((by.length() - 6) / 2);
 //        byte[] data = new byte[]{126, 1, 0, 0, 62, 104, 97, 35, 82, 80, 19, 0, 57, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 56, 54, 56, 54, 49, 50, 51, 53, 50, 53, 48, 49, 51, -21, -120, -26, 0, 54, 89, 1, 2, -119, -122, 4, 4, 25, 24, -112, 9, 89, 57, 35, 126};
 //        byte[] data = new byte[]{126, 1, 0, 0, 62, 104, 97, 35, 82, 80, 19, 0, 39, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 56, 54, 56, 54, 49, 50, 51, 53, 50, 53, 48, 49, 51, -21, -120, -26, 0, 54, 89, 1, 2, -119, -122, 4, 4, 25, 24, -112, 9, 89, 57, 61, 126};
-          byte[] data = new byte[]{126, 1, 0, 0, 47, 99, 112, 81, -107, 88, -123, 5, 125, 2, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -61, -38, -123, -67, -7, -59, 1, 2, -119, -122, 4, 3, 16, 24, -110, 1, 18, 48, -50, 126};
+//          byte[] data = new byte[]{126, 1, 0, 0, 47, 99, 112, 81, -107, 88, -123, 5, 125, 2, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -61, -38, -123, -67, -7, -59, 1, 2, -119, -122, 4, 3, 16, 24, -110, 1, 18, 48, -50, 126};
 //        byte[] data = new byte[]{126, 0, 2, 0, 0, 104, 97, 35, 82, 80, 19, 0, 6, 63, 126};
+//        byte[] data = new byte[]{126, 1, 0, 0, 47, 99, 112, 81, -107, 88, -123, 1, 125, 2, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -61, -38, -123, -67, -7, -59, 1, 2, -119, -122, 4, 3, 16, 24, -110, 1, 18, 48, -54, 126};
+        //location
+        byte[] data = new byte[]{126, 1, 0, 0, 47, 99, 112, 81, -107, 88, -123, 1, 125, 2, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -61, -38, -123, -67, -7, -59, 1, 2, -119, -122, 4, 3, 16, 24, -110, 1, 18, 48, -54, 126};
         System.out.println(toHexString1(data));
+        System.out.println(toHexString1((byte) -54));
+        System.out.println("---> " + data[data.length - 2]);
         byte[] tmp = new byte[2];
         System.arraycopy(data, 1, tmp, 0, 2);
         System.out.println(toHexString1(tmp));
@@ -104,11 +110,13 @@ public class MsgDecoder {
         System.out.println(saa);
         PackageData pp = msgDecoder.bytes2PackageData(data);
         System.out.println(toHexString1(pp.getMsgBodyBytes()));
-        TerminalRegisterMsg msg = msgDecoder.toTerminalRegisterMsg(pp);
+        LocationInfoUploadMsg msg = msgDecoder.toLocationInfoUploadMsg(pp);
+        System.out.println(msg);
     }
 
-    public static void main(String[] args) {
-        byte[] data = new byte[]{126, 1, 0, 0, 47, 99, 112, 81, -107, 96, -127, 5, 125, 1, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -15, -30, 47, -99, 125, 1, 76, 1, 2, -119, -122, 4, 3, 16, 24, -110, 1, 18, 55, 123, 126};
+    public static void main4(String[] args) {
+//        byte[] data = new byte[]{126, 1, 0, 0, 47, 99, 112, 81, -107, 96, -127, 5, 125, 1, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -15, -30, 47, -99, 125, 1, 76, 1, 2, -119, -122, 4, 3, 16, 24, -110, 1, 18, 55, 123, 126};
+        byte[] data = new byte[]{126, 2, 0, 0, 89, 99, 112, 81, -107, 96, -127, 1, 125, 1, 0, 0, 0, 0, 0, 60, 0, 0, 1, -32, 95, -33, 7, 46, 2, 127, 0, 0, 0, 0, 0, 0, 25, 1, 35, 8, 33, 4, 48, 1, 20, 49, 1, 0, -31, 4, 0, 0, 0, -53, -30, 2, 0, 65, -29, 6, 0, 100, 1, -97, 1, -37, -28, 32, 1, -52, 0, 0, 82, -107, 0, 0, 58, 64, 37, 82, -107, 0, 0, 18, -52, 29, 82, -107, 0, 0, -72, -107, 25, 82, -107, 0, 0, 18, -53, 25, -26, 1, 18, -59, 126};
         System.out.println(toHexString1(data));
 
     }
@@ -183,22 +191,21 @@ public class MsgDecoder {
         System.out.println(toHexString1(tmp));
         msgHeader.setFlowId(this.bitOperator.twoBytesToInteger(tmp));
 //		msgHeader.setFlowId(this.parseIntFromBytes(data, 10, 2));
-
         // 5. 消息包封装项
         if (msgHeader.isHasSubPackage()) {
             // 消息包封装项字段
             msgHeader.setPackageInfoField(this.parseIntFromBytes(data, 12, 4));
             // byte[0-1] 消息包总数(word(16))
-            // tmp = new byte[2];
-            // System.arraycopy(data, 12, tmp, 0, 2);
-            // msgHeader.setTotalSubPackage(this.bitOperator.twoBytesToInteger(tmp));
-            msgHeader.setTotalSubPackage(this.parseIntFromBytes(data, 12, 2));
+            tmp = new byte[2];
+            System.arraycopy(data, 12, tmp, 0, 2);
+            msgHeader.setTotalSubPackage(this.bitOperator.twoBytesToInteger(tmp));
+//            msgHeader.setTotalSubPackage(this.parseIntFromBytes(data, 12, 2));
 
             // byte[2-3] 包序号(word(16)) 从 1 开始
-            // tmp = new byte[2];
-            // System.arraycopy(data, 14, tmp, 0, 2);
-            // msgHeader.setSubPackageSeq(this.bitOperator.twoBytesToInteger(tmp));
-            msgHeader.setSubPackageSeq(this.parseIntFromBytes(data, 12, 2));
+            tmp = new byte[2];
+            System.arraycopy(data, 12, tmp, 0, 2);
+            msgHeader.setSubPackageSeq(this.bitOperator.twoBytesToInteger(tmp));
+//            msgHeader.setSubPackageSeq(this.parseIntFromBytes(data, 12, 2));
         }
         return msgHeader;
     }
@@ -291,13 +298,18 @@ public class MsgDecoder {
         body.setLicensePlateColor(this.parseIntFromBytes(data, 37, 10));
 
         // 7. byte[47-x] OTG ID
-        body.setLicensePlate(this.parseStringFromBytes(data, 47, data.length-47));
+        body.setLicensePlate(this.parseStringFromBytes(data, 47, data.length - 47));
 
         ret.setTerminalRegInfo(body);
         return ret;
     }
 
-
+    /**
+     * 解析位置信息
+     *
+     * @param packageData
+     * @return
+     */
     public LocationInfoUploadMsg toLocationInfoUploadMsg(PackageData packageData) {
         LocationInfoUploadMsg ret = new LocationInfoUploadMsg(packageData);
         final byte[] data = ret.getMsgBodyBytes();
@@ -313,10 +325,10 @@ public class MsgDecoder {
         // 5. byte[16-17] 高程(WORD(16)) 海拔高度，单位为米（ m）
         ret.setElevation(this.parseIntFromBytes(data, 16, 2));
         // byte[18-19] 速度(WORD) 1/10km/h
-        ret.setSpeed(this.parseFloatFromBytes(data, 18, 2));
+        ret.setSpeed(this.parseIntFromBytes(data, 18, 2));
         // byte[20-21] 方向(WORD) 0-359，正北为 0，顺时针
         ret.setDirection(this.parseIntFromBytes(data, 20, 2));
-        // byte[22-x] 时间(BCD[6]) YY-MM-DD-hh-mm-ss
+        // byte[22-27] 时间(BCD[6]) YY-MM-DD-hh-mm-ss
         // GMT+8 时间，本标准中之后涉及的时间均采用此时区
         // ret.setTime(this.par);
 
