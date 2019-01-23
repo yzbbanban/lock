@@ -99,4 +99,14 @@ public class TerminalMsgProcessService extends BaseMsgProcessService {
         byte[] bs = this.msgEncoder.encode4ServerCommonRespMsg(req, respMsgBody, flowId);
         super.send2Client(req.getChannel(), bs);
     }
+
+    public void processMessageInfoUploadMsg(LocationInfoUploadMsg req) throws Exception {
+        log.debug(" 信息:{}", JSON.toJSONString(req, true));
+        final PackageData.MsgHeader reqHeader = req.getMsgHeader();
+        ServerCommonRespMsgBody respMsgBody = new ServerCommonRespMsgBody(reqHeader.getFlowId(), reqHeader.getMsgId(),
+                ServerCommonRespMsgBody.success);
+        int flowId = super.getFlowId(req.getChannel());
+        byte[] bs = this.msgEncoder.encode4ServerCommonRespMsg(req, respMsgBody, flowId);
+        super.send2Client(req.getChannel(), bs);
+    }
 }

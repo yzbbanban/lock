@@ -131,6 +131,9 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
                 System.out.println(locationInfoUploadMsg);
                 this.msgProcessService.processLocationInfoUploadMsg(locationInfoUploadMsg);
                 logger.info("<<<<<[位置信息],phone={},flowid={}", header.getTerminalPhone(), header.getFlowId());
+                //获取位置信息在发送
+
+
             } catch (Exception e) {
                 logger.error("<<<<<[位置信息]处理错误,phone={},flowid={},err={}", header.getTerminalPhone(), header.getFlowId(),
                         e.getMessage());
