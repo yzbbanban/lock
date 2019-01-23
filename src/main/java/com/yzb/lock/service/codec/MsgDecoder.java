@@ -284,7 +284,10 @@ public class MsgDecoder {
         // 5. byte[29] 蓝牙 MAC 地址
         body.setTerminalId(this.parseStringFromBytes(data, 29, 7));
 
-        // 6. byte[37-46] 锁类型
+        // 6. byte[36] 锁类型
+        body.setLicensePlateColor(this.parseIntFromBytes(data, 36, 1));
+
+        // 7. byte[37-46] 锁类型
         body.setLicensePlateColor(this.parseIntFromBytes(data, 37, 10));
 
         // 7. byte[47-x] OTG ID

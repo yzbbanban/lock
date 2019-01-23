@@ -68,8 +68,8 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
     private void processPackageData(PackageData packageData) {
         final PackageData.MsgHeader header = packageData.getMsgHeader();
         logger.info(">>>>>[终端header],phone={},flowid={}", header);
-        logger.info(">>>>>[终端package],BodyBytes={}", Arrays.toString(packageData.getMsgBodyBytes()));
-        logger.info(">>>>>[终端package],CheckSum={}", packageData.getCheckSum());
+        logger.info(">>>>>[终端BodyBytes],BodyBytes={}", Arrays.toString(packageData.getMsgBodyBytes()));
+        logger.info(">>>>>[终端CheckSum],CheckSum={}", packageData.getCheckSum());
         logger.info(">>>>>[终端header],phone={},MsgId={}", header.getTerminalPhone(), header.getMsgId());
         // 1. 终端心跳-消息体为空 ==> 平台通用应答
         if (TPMSConsts.msg_id_terminal_heart_beat == header.getMsgId()) {
@@ -109,6 +109,7 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
                         e.getMessage());
                 e.printStackTrace();
             }
+
         }
         // 7. 终端注销(终端注销数据消息体为空) ==> 平台通用应答
         else if (TPMSConsts.msg_id_terminal_log_out == header.getMsgId()) {
@@ -138,18 +139,9 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
         }
         // 其他情况
         else {
-//            logger.error(">>>>>>[未知消息类型],phone={},msgId={},package={}", header.getTerminalPhone(), header.getMsgId(),
-//                    packageData);
-            logger.info(">>>>>else[终端鉴权],phone={},flowid={}", header.getTerminalPhone(), header.getFlowId());
-            try {
-                TerminalAuthenticationMsg authenticationMsg = new TerminalAuthenticationMsg(packageData);
-                this.msgProcessService.processAuthMsg(authenticationMsg);
-                logger.info("<<<<<else[终端鉴权],phone={},flowid={}", header.getTerminalPhone(), header.getFlowId());
-            } catch (Exception e) {
-                logger.error("<<<<<else[终端鉴权]处理错误,phone={},flowid={},err={}", header.getTerminalPhone(), header.getFlowId(),
-                        e.getMessage());
-                e.printStackTrace();
-            }
+            logger.error(">>>>>>[未知消息类型],phone={},msgId={},package={}", header.getTerminalPhone(), header.getMsgId(),
+                    packageData);
+
         }
     }
 
