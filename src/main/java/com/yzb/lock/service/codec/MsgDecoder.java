@@ -9,7 +9,9 @@ import com.yzb.lock.vo.req.TerminalRegisterMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 public class MsgDecoder {
 
@@ -40,7 +42,7 @@ public class MsgDecoder {
             msgBodyByteStartIndex = 17;
         }
 
-        byte[] tmp = new byte[msgHeader.getMsgBodyLength()+1];
+        byte[] tmp = new byte[msgHeader.getMsgBodyLength() + 1];
         System.arraycopy(data, msgBodyByteStartIndex, tmp, 0, tmp.length);
         ret.setMsgBodyBytes(tmp);
 
@@ -85,7 +87,7 @@ public class MsgDecoder {
 //        byte[] data = new byte[]{126, 1, 0, 0, 62, 104, 97, 35, 82, 80, 19, 0, 39, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 56, 54, 56, 54, 49, 50, 51, 53, 50, 53, 48, 49, 51, -21, -120, -26, 0, 54, 89, 1, 2, -119, -122, 4, 4, 25, 24, -112, 9, 89, 57, 61, 126};
 //          byte[] data = new byte[]{126, 1, 0, 0, 47, 99, 112, 81, -107, 88, -123, 5, 125, 2, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -61, -38, -123, -67, -7, -59, 1, 2, -119, -122, 4, 3, 16, 24, -110, 1, 18, 48, -50, 126};
 //        byte[] data = new byte[]{126, 0, 2, 0, 0, 104, 97, 35, 82, 80, 19, 0, 6, 63, 126};
-        byte[] data = new byte[]{126, 1, 0, 0, 47, 99, 112, 81, -107, 88, -123, 1, 125, 2, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -61, -38, -123, -67, -7, -59, 1, 2, -119, -122, 4, 3, 16, 24, -110, 1, 18, 48, -54, 126};
+        byte[] data = new byte[]{126, 2, 0, 0, 89, 99, 112, 81, -107, 88, -123, 1, 125, 1, 0, 0, 0, 0, 0, 60, 0, 0, 1, -32, 102, -22, 7, 45, -21, 105, 0, 0, 0, 0, 0, 0, 25, 1, 35, 24, 65, 67, 48, 1, 18, 49, 1, 0, -31, 4, 0, 0, 0, -16, -30, 2, 0, 65, -29, 6, 0, 100, 1, -93, 1, -16, -28, 32, 1, -52, 0, 0, 82, -107, 0, 0, 18, -53, 34, 82, -107, 0, 0, 18, -52, 39, 82, -107, 0, 0, 44, 38, 32, 0, 0, 0, 0, 0, 0, 0, -26, 1, 120, -7, 126};
         //location
 //        byte[] data = new byte[]{126, 2, 0, 0, 89, 99, 112, 81, -107, 88, -123, 0, 125, 1, 0, 0, 0, 0, 0, 60, 0, 0, 1, -32, 102, -22, 7, 45, -21, 105, 0, 0, 0, 0, 0, 0, 25, 1, 35, 20, 35, 64, 48, 1, 25, 49, 1, 0, -31, 4, 0, 0, 0, -16, -30, 2, 0, 65, -29, 6, 0, 100, 1, -93, 1, -16, -28, 32, 1, -52, 0, 0, 82, -107, 0, 0, 58, 64, 47, 82, -107, 0, 0, 18, -52, 40, 82, -107, 0, 0, 18, -53, 31, 0, 0, 0, 0, 0, 0, 0, -26, 1, 0, -85, 126};
         System.out.println(toHexString1(data));
@@ -114,7 +116,7 @@ public class MsgDecoder {
         System.out.println(msg);
     }
 
-    public static void main3(String[] args) {
+    public static void main4(String[] args) {
 //        byte[] data = new byte[]{126, 1, 0, 0, 47, 99, 112, 81, -107, 96, -127, 5, 125, 1, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -15, -30, 47, -99, 125, 1, 76, 1, 2, -119, -122, 4, 3, 16, 24, -110, 1, 18, 55, 123, 126};
 //        byte[] data = new byte[]{126, 2, 0, 0, 89, 99, 112, 81, -107, 88, -123, 0, 125, 1, 0, 0, 0, 0, 0, 60, 0, 0, 1, -32, 102, -22, 7, 45, -21, 105, 0, 0, 0, 0, 0, 0, 25, 1, 35, 20, 35, 64, 48, 1, 25, 49, 1, 0, -31, 4, 0, 0, 0, -16, -30, 2, 0, 65, -29, 6, 0, 100, 1, -93, 1, -16, -28, 32, 1, -52, 0, 0, 82, -107, 0, 0, 58, 64, 47, 82, -107, 0, 0, 18, -52, 40, 82, -107, 0, 0, 18, -53, 31, 0, 0, 0, 0, 0, 0, 0, -26, 1, 0, -85, 126};
         byte[] data = new byte[]{1, 0, 0, 0, 0, 0, 60, 0, 0, 1, -32, 102, -22, 7, 45, -21, 105, 0, 0, 0, 0, 0, 0, 25, 1, 35, 20, 35, 64, 48, 1, 25, 49, 1, 0, -31, 4, 0, 0, 0, -16, -30, 2, 0, 65, -29, 6, 0, 100, 1, -93, 1, -16, -28, 32, 1, -52, 0, 0, 82, -107, 0, 0, 58, 64, 47, 82, -107, 0, 0, 18, -52, 40, 82, -107, 0, 0, 18, -53, 31, 0, 0, 0, 0, 0, 0, 0, -26, 1};
@@ -331,11 +333,16 @@ public class MsgDecoder {
         ret.setDirection(this.parseIntFromBytes(data, 20, 2));
         // byte[22-27] 时间(BCD[6]) YY-MM-DD-hh-mm-ss
         // GMT+8 时间，本标准中之后涉及的时间均采用此时区
-        // ret.setTime(this.par);
-
-        byte[] tmp = new byte[6];
-        System.arraycopy(data, 22, tmp, 0, 6);
         String time = this.parseBcdStringFromBytes(data, 22, 6);
+        log.info("time:{}", time);
+        ret.setTime(new Date());
+
+        int extraId = this.parseIntFromBytes(data, 28, 1);
+        log.info("extraId:{}", extraId);
+        int extraLength = this.parseIntFromBytes(data, 29, 1);
+        log.info("extraLength:{}", extraLength);
+        int extraMsg = this.parseIntFromBytes(data, 30, 1);
+        log.info("extraMsg:{}", extraMsg);
         return ret;
     }
 
