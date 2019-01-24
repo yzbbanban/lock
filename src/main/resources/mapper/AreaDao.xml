@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzb.lock.dao.AreaDao">
+
+    <select id="queryArea" resultType="com.yzb.lock.vo.Area">
+        SELECT area_id,area_name, priority,
+        create_time,last_edit_time
+        FROM tb_area
+        ORDER BY priority
+        DESC
+    </select>
+    <select id="queryAreaById" parameterType="int" resultType="com.yzb.lock.vo.Area">
+        SELECT area_id,area_name, priority, version,
+        create_time,last_edit_time,testSelect
+        FROM tb_area
+        WHERE area_id=#{id}
+    </select>
+    <select id="getCount" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM tb_area
+    </select>
+    <insert id="insertArea" useGeneratedKeys="true" keyColumn="area_id" keyProperty="areaId"
+            parameterType="com.yzb.lock.vo.Area">
+      INSERT INTO tb_area
+      (area_name, priority,
+        create_time,last_edit_time)
+      VALUE
+      (#{areaName}, #{priority},
+        now(),now())
+    </insert>
+
+    <update id="updateArea" parameterType="com.yzb.lock.vo.Area">
+        UPDATE tb_area
+        SET
+        <if test="areaName!=null">
+            area_name=#{areaName},
+        </if>
+        <if test="priority!=null">
+            priority=#{priority},
+        </if>
+        version =#{version}+1,
+        last_edit_time=now()
+        WHERE area_id=#{areaId}
+        AND version= #{version}
+    </update>
+
+
+    <update id="updateSelect" parameterType="com.yzb.lock.vo.Area">
+        UPDATE tb_area
+        SET
+        <if test="areaName!=null">
+            area_name=#{areaName},
+        </if>
+        <if test="priority!=null">
+            priority=#{priority},
+        </if>
+        testSelect = #{testSelect} +1,
+        last_edit_time=now()
+        WHERE area_id=#{areaId}
+    </update>
+
+    <delete id="deleteArea" parameterType="int">
+      DELETE FROM tb_area WHERE area_id=#{areaId}
+    </delete>
+
+</mapper>

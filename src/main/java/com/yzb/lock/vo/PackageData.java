@@ -21,8 +21,18 @@ public class PackageData {
 	 */
 	protected int checkSum;
 
+	protected int dataLength;
+
 	@JSONField(serialize=false)
 	protected Channel channel;
+
+	public int getDataLength() {
+		return dataLength;
+	}
+
+	public void setDataLength(int dataLength) {
+		this.dataLength = dataLength;
+	}
 
 	public MsgHeader getMsgHeader() {
 		return msgHeader;
@@ -58,8 +68,13 @@ public class PackageData {
 
 	@Override
 	public String toString() {
-		return "PackageData [msgHeader=" + msgHeader + ", msgBodyBytes=" + Arrays.toString(msgBodyBytes) + ", checkSum="
-				+ checkSum + ", address=" + channel + "]";
+		return "PackageData{" +
+				"msgHeader=" + msgHeader +
+				", msgBodyBytes=" + Arrays.toString(msgBodyBytes) +
+				", checkSum=" + checkSum +
+				", dataLength=" + dataLength +
+				", channel=" + channel +
+				'}';
 	}
 
 	public static class MsgHeader {
@@ -183,11 +198,19 @@ public class PackageData {
 
 		@Override
 		public String toString() {
-			return "MsgHeader [msgId=" + msgId + ", msgBodyPropsField=" + msgBodyPropsField + ", msgBodyLength="
-					+ msgBodyLength + ", encryptionType=" + encryptionType + ", hasSubPackage=" + hasSubPackage
-					+ ", reservedBit=" + reservedBit + ", terminalPhone=" + terminalPhone + ", flowId=" + flowId
-					+ ", packageInfoField=" + packageInfoField + ", totalSubPackage=" + totalSubPackage
-					+ ", subPackageSeq=" + subPackageSeq + "]";
+			return "MsgHeader{" +
+					"msgId=" + msgId +
+					", msgBodyPropsField=" + msgBodyPropsField +
+					", msgBodyLength=" + msgBodyLength +
+					", encryptionType=" + encryptionType +
+					", hasSubPackage=" + hasSubPackage +
+					", reservedBit='" + reservedBit + '\'' +
+					", terminalPhone='" + terminalPhone + '\'' +
+					", flowId=" + flowId +
+					", packageInfoField=" + packageInfoField +
+					", totalSubPackage=" + totalSubPackage +
+					", subPackageSeq=" + subPackageSeq +
+					'}';
 		}
 
 	}
