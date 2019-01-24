@@ -40,7 +40,7 @@ public class MsgDecoder {
             msgBodyByteStartIndex = 17;
         }
 
-        byte[] tmp = new byte[msgHeader.getMsgBodyLength()+1];
+        byte[] tmp = new byte[msgHeader.getMsgBodyLength() + 1];
         System.arraycopy(data, msgBodyByteStartIndex, tmp, 0, tmp.length);
         ret.setMsgBodyBytes(tmp);
 
@@ -85,7 +85,7 @@ public class MsgDecoder {
 //        byte[] data = new byte[]{126, 1, 0, 0, 62, 104, 97, 35, 82, 80, 19, 0, 39, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 54, 56, 54, 56, 54, 49, 50, 51, 53, 50, 53, 48, 49, 51, -21, -120, -26, 0, 54, 89, 1, 2, -119, -122, 4, 4, 25, 24, -112, 9, 89, 57, 61, 126};
 //          byte[] data = new byte[]{126, 1, 0, 0, 47, 99, 112, 81, -107, 88, -123, 5, 125, 2, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -61, -38, -123, -67, -7, -59, 1, 2, -119, -122, 4, 3, 16, 24, -110, 1, 18, 48, -50, 126};
 //        byte[] data = new byte[]{126, 0, 2, 0, 0, 104, 97, 35, 82, 80, 19, 0, 6, 63, 126};
-        byte[] data = new byte[]{126, 1, 0, 0, 47, 99, 112, 81, -107, 88, -123, 1, 125, 2, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -61, -38, -123, -67, -7, -59, 1, 2, -119, -122, 4, 3, 16, 24, -110, 1, 18, 48, -54, 126};
+        byte[] data = new byte[]{126, 2, 0, 0, 89, 99, 112, 81, -107, 88, -123, 3, 27, 0, 0, 0, 0, 0, 60, 0, 0, 1, -32, 102, -22, 7, 45, -21, 105, 0, 0, 0, 0, 0, 0, 25, 1, 36, 1, 55, 87, 48, 1, 22, 49, 1, 0, -31, 4, 0, 0, 0, -16, -30, 2, 0, 65, -29, 6, 0, 100, 1, -93, 1, -16, -28, 32, 1, -52, 0, 0, 82, -107, 0, 0, 58, 64, 42, 82, -107, 0, 0, 18, -52, 36, 82, -107, 0, 0, 18, -53, 34, 82, -27, 0, 0, 2, -27, 31, -26, 1, -60, 111, 126};
         //location
 //        byte[] data = new byte[]{126, 2, 0, 0, 89, 99, 112, 81, -107, 88, -123, 0, 125, 1, 0, 0, 0, 0, 0, 60, 0, 0, 1, -32, 102, -22, 7, 45, -21, 105, 0, 0, 0, 0, 0, 0, 25, 1, 35, 20, 35, 64, 48, 1, 25, 49, 1, 0, -31, 4, 0, 0, 0, -16, -30, 2, 0, 65, -29, 6, 0, 100, 1, -93, 1, -16, -28, 32, 1, -52, 0, 0, 82, -107, 0, 0, 58, 64, 47, 82, -107, 0, 0, 18, -52, 40, 82, -107, 0, 0, 18, -53, 31, 0, 0, 0, 0, 0, 0, 0, -26, 1, 0, -85, 126};
         System.out.println(toHexString1(data));
@@ -112,12 +112,15 @@ public class MsgDecoder {
         System.out.println("--->" + toHexString1(pp.getMsgBodyBytes()));
         LocationInfoUploadMsg msg = msgDecoder.toLocationInfoUploadMsg(pp);
         System.out.println(msg);
+//        byte[] d = new byte[]{0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+//        System.out.println(toHexString1(d));
+
     }
 
-    public static void main3(String[] args) {
+    public static void main4(String[] args) {
 //        byte[] data = new byte[]{126, 1, 0, 0, 47, 99, 112, 81, -107, 96, -127, 5, 125, 1, 0, 1, 0, 2, 55, 48, 57, 53, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -15, -30, 47, -99, 125, 1, 76, 1, 2, -119, -122, 4, 3, 16, 24, -110, 1, 18, 55, 123, 126};
 //        byte[] data = new byte[]{126, 2, 0, 0, 89, 99, 112, 81, -107, 88, -123, 0, 125, 1, 0, 0, 0, 0, 0, 60, 0, 0, 1, -32, 102, -22, 7, 45, -21, 105, 0, 0, 0, 0, 0, 0, 25, 1, 35, 20, 35, 64, 48, 1, 25, 49, 1, 0, -31, 4, 0, 0, 0, -16, -30, 2, 0, 65, -29, 6, 0, 100, 1, -93, 1, -16, -28, 32, 1, -52, 0, 0, 82, -107, 0, 0, 58, 64, 47, 82, -107, 0, 0, 18, -52, 40, 82, -107, 0, 0, 18, -53, 31, 0, 0, 0, 0, 0, 0, 0, -26, 1, 0, -85, 126};
-        byte[] data = new byte[]{1, 0, 0, 0, 0, 0, 60, 0, 0, 1, -32, 102, -22, 7, 45, -21, 105, 0, 0, 0, 0, 0, 0, 25, 1, 35, 20, 35, 64, 48, 1, 25, 49, 1, 0, -31, 4, 0, 0, 0, -16, -30, 2, 0, 65, -29, 6, 0, 100, 1, -93, 1, -16, -28, 32, 1, -52, 0, 0, 82, -107, 0, 0, 58, 64, 47, 82, -107, 0, 0, 18, -52, 40, 82, -107, 0, 0, 18, -53, 31, 0, 0, 0, 0, 0, 0, 0, -26, 1};
+        byte[] data = new byte[]{0, 0, 0, 0, 0, 60, 0, 0, 1, -32, 102, -22, 7, 45, -21, 105, 0, 0, 0, 0, 0, 0, 25, 1, 36, 1, 55, 87, 48, 1, 22, 49, 1, 0, -31, 4, 0, 0, 0, -16, -30, 2, 0, 65, -29, 6, 0, 100, 1, -93, 1, -16, -28, 32, 1, -52, 0, 0, 82, -107, 0, 0, 58, 64, 42, 82, -107, 0, 0, 18, -52, 36, 82, -107, 0, 0, 18, -53, 34, 82, -27, 0, 0, 2, -27, 31, -26, 1, -60, 111};
         System.out.println(toHexString1(data));
 
     }
@@ -316,13 +319,13 @@ public class MsgDecoder {
         final byte[] data = ret.getMsgBodyBytes();
 
         // 1. byte[0-3] 报警标志(DWORD(32))
-        ret.setWarningFlagField(this.parseIntFromBytes(data, 0, 3));
+        ret.setWarningFlagField(this.parseIntFromBytes(data, 0, 4));
         // 2. byte[4-7] 状态(DWORD(32))
         ret.setStatusField(this.parseIntFromBytes(data, 4, 4));
         // 3. byte[8-11] 纬度(DWORD(32)) 以度为单位的纬度值乘以10^6，精确到百万分之一度
         ret.setLatitude(this.parseFloatFromBytes(data, 8, 4));
         // 4. byte[12-15] 经度(DWORD(32)) 以度为单位的经度值乘以10^6，精确到百万分之一度
-        ret.setLongitude(this.parseFloatFromBytes(data, 12, 4));
+        ret.setLongitude(this.parseFloatFromBytes(data, 10, 4));
         // 5. byte[16-17] 高程(WORD(16)) 海拔高度，单位为米（ m）
         ret.setElevation(this.parseIntFromBytes(data, 16, 2));
         // byte[18-19] 速度(WORD) 1/10km/h
@@ -330,12 +333,104 @@ public class MsgDecoder {
         // byte[20-21] 方向(WORD) 0-359，正北为 0，顺时针
         ret.setDirection(this.parseIntFromBytes(data, 20, 2));
         // byte[22-27] 时间(BCD[6]) YY-MM-DD-hh-mm-ss
-        // GMT+8 时间，本标准中之后涉及的时间均采用此时区
-        // ret.setTime(this.par);
 
         byte[] tmp = new byte[6];
-        System.arraycopy(data, 22, tmp, 0, 6);
-        String time = this.parseBcdStringFromBytes(data, 22, 6);
+        System.arraycopy(data, 23, tmp, 0, 6);
+        log.info("time:{}", toHexString1(tmp));
+
+
+        //无线通信信号 1
+        byte[] tmp1 = new byte[1];
+        int wei = 28;
+        System.arraycopy(data, wei, tmp1, 0, 1);
+        log.info("extraId1:{}", toHexString1(tmp1));
+
+
+        wei += 1;
+        System.arraycopy(data, wei, tmp1, 0, 1);
+        int extraLength1 = this.parseIntFromBytes(data, wei, 1);
+        log.info("extraId1 length:{}", extraLength1 + " ex " + toHexString1(tmp1));
+        tmp1 = new byte[extraLength1];
+        wei += 1;
+        System.arraycopy(data, wei, tmp1, 0, extraLength1);
+        log.info("wirelessSignal:{}", toHexString1(tmp1));
+
+
+        //卫星数 2
+        wei += extraLength1;
+        tmp1 = new byte[1];
+        System.arraycopy(data, wei, tmp1, 0, 1);
+        log.info("extraId2:{}", toHexString1(tmp1));
+
+        wei += 1;
+        System.arraycopy(data, wei, tmp1, 0, 1);
+
+        int extraLength2 = this.parseIntFromBytes(data, wei, 1);
+        log.info("extraId2 length:{}", extraLength2 + " ex " + toHexString1(tmp1));
+        tmp1 = new byte[extraLength2];
+        wei += 1;
+        System.arraycopy(data, wei, tmp1, 0, extraLength2);
+        log.info("satelliteCount:{}", toHexString1(tmp1));
+
+        //开锁次数 3
+        wei += extraLength2;
+        tmp1 = new byte[1];
+        System.arraycopy(data, wei, tmp1, 0, 1);
+        log.info("extraId3:{}", toHexString1(tmp1));
+
+        wei += 1;
+        System.arraycopy(data, wei, tmp1, 0, 1);
+        int extraLength3 = this.parseIntFromBytes(data, wei, 1);
+        log.info("extraId3 length:{}", extraLength3 + " ex " + toHexString1(tmp1));
+        tmp1 = new byte[extraLength3];
+        wei += 1;
+        System.arraycopy(data, wei, tmp1, 0, extraLength3);
+        log.info("unLockCount:{}", toHexString1(tmp1));
+
+        //锁状态 4
+        wei += extraLength3;
+        tmp1 = new byte[1];
+        System.arraycopy(data, wei, tmp1, 0, 1);
+        log.info("extraId4:{}", toHexString1(tmp1));
+
+        wei += 1;
+        System.arraycopy(data, wei, tmp1, 0, 1);
+        int extraLength4 = this.parseIntFromBytes(data, wei, 1);
+        log.info("extraId4 length:{}", extraLength4 + " ex " + toHexString1(tmp1));
+        tmp1 = new byte[extraLength4];
+        wei += 1;
+        System.arraycopy(data, wei, tmp1, 0, extraLength4);
+        log.info("lockStatus:{}", toHexString1(tmp1));
+
+        //电压 5
+        wei += extraLength4;
+
+        tmp1 = new byte[1];
+        System.arraycopy(data, wei, tmp1, 0, 1);
+        log.info("extraId4:{}", toHexString1(tmp1));
+
+        wei += 1;
+        System.arraycopy(data, wei, tmp1, 0, 1);
+        int extraLength5 = this.parseIntFromBytes(data, wei, 1);
+        log.info("extraId4 length:{}", extraLength5 + " ex " + toHexString1(tmp1));
+        tmp1 = new byte[extraLength5];
+        wei += 1;
+        System.arraycopy(data, wei, tmp1, 0, extraLength5);
+        log.info("lockBattery:{}", toHexString1(tmp1));
+
+        tmp1 = new byte[2];
+        System.arraycopy(data, wei, tmp1, 0, extraLength5 - 4);
+
+        log.info("当前电量：lockBattery:{}", Integer.parseInt(toHexString1(tmp1)));
+
+        //基站
+//        int baseStation = this.parseIntFromBytes(data, 44, data.length - 48);
+        //流水号
+        int lockFlow = this.parseIntFromBytes(data, data.length - 4, 4);
+        log.info("lockFlow:{}", lockFlow);
+
+        // GMT+8 时间，本标准中之后涉及的时间均采用此时区
+        // ret.setTime(this.par);
         return ret;
     }
 
