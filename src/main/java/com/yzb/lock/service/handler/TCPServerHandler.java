@@ -4,6 +4,7 @@ import com.yzb.lock.SessionManager;
 import com.yzb.lock.common.TPMSConsts;
 import com.yzb.lock.service.TerminalMsgProcessService;
 import com.yzb.lock.service.codec.MsgDecoder;
+import com.yzb.lock.util.ContextUtils;
 import com.yzb.lock.vo.PackageData;
 import com.yzb.lock.vo.Session;
 import com.yzb.lock.vo.req.LocationInfoUploadMsg;
@@ -17,7 +18,11 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.Arrays;
 
 public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
@@ -25,12 +30,14 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final SessionManager sessionManager;
-    private final MsgDecoder decoder;
+
+
+    private MsgDecoder decoder;
+
     private TerminalMsgProcessService msgProcessService;
 
     public TCPServerHandler() {
         this.sessionManager = SessionManager.getInstance();
-        this.decoder = new MsgDecoder();
         this.msgProcessService = new TerminalMsgProcessService();
     }
 
@@ -43,6 +50,11 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
                 // ReferenceCountUtil.safeRelease(msg);
                 return;
             }
+            try {
+                decoder= ContextUtils.getBeanByClass(MsgDecoder.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             byte[] bs = new byte[buf.readableBytes()];
             buf.readBytes(bs);
@@ -50,7 +62,7 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
 
             logger.info("byte: {}", Arrays.toString(bs));
             // 字节数据转换为针对于808消息结构的实体类
-            PackageData pkg = this.decoder.bytes2PackageData(bs);
+            PackageData pkg = decoder.bytes2PackageData(bs);
             // 引用channel,以便回送数据给硬件
             pkg.setChannel(ctx.channel());
             this.processPackageData(pkg);

@@ -1,17 +1,25 @@
 package com.yzb.lock.service.codec;
 
 import com.yzb.lock.common.TPMSConsts;
+import com.yzb.lock.dao.SignDao;
 import com.yzb.lock.util.BCD8421Operater;
 import com.yzb.lock.util.BitOperator;
 import com.yzb.lock.vo.PackageData;
+import com.yzb.lock.vo.Sign;
 import com.yzb.lock.vo.req.LocationInfoUploadMsg;
 import com.yzb.lock.vo.req.TerminalRegisterMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.Date;
 
+@Component
 public class MsgDecoder {
+
+    @Autowired
+    private SignDao signDao;
 
     private static final Logger log = LoggerFactory.getLogger(MsgDecoder.class);
 
@@ -360,6 +368,8 @@ public class MsgDecoder {
         }
         log.info("time:{}", toHexString1(tmp));
 
+        Sign sign = new Sign();
+        sign.setDeivceid(packageData.getMsgHeader().getTerminalPhone());
 
         //无线通信信号 1
         byte[] tmp1 = new byte[1];
@@ -413,6 +423,7 @@ public class MsgDecoder {
         tmp1 = new byte[1];
         System.arraycopy(data, wei, tmp1, 0, 1);
         log.info("extraId4:{}", toHexString1(tmp1));
+        sign.setLockstatus(toHexString1(tmp1));
 
         wei += 1;
         System.arraycopy(data, wei, tmp1, 0, 1);
@@ -443,8 +454,11 @@ public class MsgDecoder {
         System.arraycopy(data, wei, tmp1, 0, extraLength5 - 4);
 
         log.info("当前电量：lockBattery:{}", Integer.parseInt(toHexString1(tmp1)));
+        sign.setLockstatus(String.valueOf(Integer.parseInt(toHexString1(tmp1))));
+        sign.setTime(new Date());
         //保存到数据库
-
+        int row = signDao.insertSign(sign);
+        log.info("updateSign dao:{}", row);
 
         //基站
 //        int baseStation = this.parseIntFromBytes(data, 44, data.length - 48);

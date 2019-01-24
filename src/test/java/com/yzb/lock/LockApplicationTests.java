@@ -1,6 +1,6 @@
 package com.yzb.lock;
 
-import com.yzb.lock.dao.AreaDao;
+import com.yzb.lock.service.handler.TCPServerHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +11,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class LockApplicationTests {
 
-    @Autowired
-    AreaDao areaDao;
-
     @Test
     public void contextLoads() {
-        System.out.println(areaDao.queryArea());
+        TCPServerHandler ha = new TCPServerHandler();
+
+        try {
+            ha.channelRead(null, null);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }

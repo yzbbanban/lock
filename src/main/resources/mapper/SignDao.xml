@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzb.lock.dao.SignDao">
+
+
+    <insert id="insertSign" parameterType="com.yzb.lock.vo.Sign">
+      INSERT INTO tb_area
+      (battery, lockstatus,
+        time,deviceid)
+      VALUE
+      (#{battery}, #{lockstatus},
+        time,deviceid)
+    </insert>
+
+
+    <update id="updateSign" parameterType="com.yzb.lock.vo.Sign">
+        UPDATE sign
+        SET
+        <if test="battery!=null">
+            battery=#{battery},
+        </if>
+        <if test="lockstatus!=null">
+            lockstatus=#{lockstatus},
+        </if>
+        <if test="time!=null">
+            time=#{time},
+        </if>
+        WHERE deviceid=#{deviceid}
+    </update>
+
+</mapper>

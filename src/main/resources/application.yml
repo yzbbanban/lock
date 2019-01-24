@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://192.168.1.117:3306/test?useUnicode=true&characterEncoding=UTF-8&useCompression=true
+    url: jdbc:mysql://127.0.0.1:3306/cage?useUnicode=true&characterEncoding=UTF-8&useCompression=true
     username: root
-    password: wanban
+    password: ltroot
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
 mybatis:
