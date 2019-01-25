@@ -17,8 +17,6 @@ import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,10 +27,15 @@ public class TCPServer {
 
     private EventLoopGroup bossGroup = null;
     private EventLoopGroup workerGroup = null;
+    private int port;
 
     public TCPServer() {
     }
 
+    public TCPServer(int port) {
+        this();
+        this.port = port;
+    }
 
     private void bind() throws Exception {
         this.bossGroup = new NioEventLoopGroup();
@@ -49,15 +52,15 @@ public class TCPServer {
                         ch.pipeline().addLast(new Decoder4LoggingOnly());
                         // 1024表示单条消息的最大长度，解码器在查找分隔符的时候，达到该长度还没找到的话会抛异常
                         ch.pipeline().addLast(
-                                new DelimiterBasedFrameDecoder(1024, Unpooled.copiedBuffer(new byte[]{0x7e}),
-                                        Unpooled.copiedBuffer(new byte[]{0x7e, 0x7e})));
+                                new DelimiterBasedFrameDecoder(1024, Unpooled.copiedBuffer(new byte[] { 0x7e }),
+                                        Unpooled.copiedBuffer(new byte[] { 0x7e, 0x7e })));
                         // ch.pipeline().addLast(new PackageDataDecoder());
                     }
                 }).option(ChannelOption.SO_BACKLOG, 128) //
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-        this.log.info("TCP服务启动完毕,port={}", 20048);
-        ChannelFuture channelFuture = serverBootstrap.bind(20048).sync();
+        this.log.info("TCP服务启动完毕,port={}", this.port);
+        ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
 
         channelFuture.channel().closeFuture().sync();
     }

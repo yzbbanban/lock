@@ -12,13 +12,9 @@ public class LockApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(LockApplication.class, args);
-    }
-
-    @Bean
-    public TCPServer iniTcp() {
-        TCPServer server = new TCPServer();
+        SpringApplication.run(LockApplication.class, args);
+        TCPServer server = new TCPServer(20048);
         server.startServer();
-        return server;
     }
 
 }
