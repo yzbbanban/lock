@@ -6,7 +6,7 @@
 
 
     <insert id="insertSign" parameterType="com.yzb.lock.vo.Sign">
-      INSERT INTO tb_area
+      INSERT INTO sign
       (battery, lockstatus,
         time,deviceid)
       VALUE
