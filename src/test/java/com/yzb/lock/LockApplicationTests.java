@@ -13,13 +13,7 @@ public class LockApplicationTests {
 
     @Test
     public void contextLoads() {
-        TCPServerHandler ha = new TCPServerHandler();
 
-        try {
-            ha.channelRead(null, null);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
 }
