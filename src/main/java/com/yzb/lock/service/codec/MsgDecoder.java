@@ -367,6 +367,11 @@ public class MsgDecoder {
         } else {
             wei = 29;
             System.arraycopy(data, 23, tmp, 0, 6);
+            String time = toHexString1(tmp);
+            if (!time.startsWith("1")) {
+                wei = 28;
+                System.arraycopy(data, 22, tmp, 0, 6);
+            }
         }
         log.info("time:{}", toHexString1(tmp));
 
